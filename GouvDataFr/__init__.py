@@ -1,5 +1,5 @@
-from decouple import config
 import json
-from utils import HEADERS, exit_fonction, entry_empty, verify_entry, return_entry, clear_terminal
-import pandas as pd
-import os
+
+from decouple import config
+
+from utils import HEADERS, clear_terminal, navigate_location, return_entry, verify_entry

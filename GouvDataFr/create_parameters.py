@@ -1,15 +1,4 @@
-from . import (
-    HEADERS,
-    clear_terminal,
-    entry_empty,
-    exit_fonction,
-    os,
-    pd,
-    return_entry,
-    verify_entry,
-)
-
-
+from . import HEADERS, clear_terminal, navigate_location, return_entry
 
 
 def ask_scrap_information() -> dict[str, str]:
@@ -40,7 +29,7 @@ def ask_category() -> str:
     return choice[0]
 
 
-def department_or_commune() -> str:
+def department_or_commune() -> int | list[int]:
 
     LIST_CHOICES = [
         (True, "Un Département français précis"),
@@ -63,25 +52,29 @@ def department_or_commune() -> str:
         return choice_commune()
 
 
-def choice_department() -> str:
-    
-    print("Vous êtes libre de choisir entre un seul ou plusieurs départements")
-    print(
-        """
-1- Je cible un seul département
-2- Je cible plusieurs départements
-"""
-    )
-    choice: int = return_entry(choice_department, ["1", "2"])
-    print("Le choix est", choice)
-    if choice == 1:
-        print(
-            """Vous avez décidé de choisir un seul département.\nNous vous les présenterons par lot de 10.\nPour aller sur la page suivante, cliquez sur la lettre S, P pour le précédent.\nL'objectif est de choisir le numéro de votre ville"""
-        )
-        
-    
+def choice_department() -> int | list[int]:
+    departments = []
+    departments.append(navigate_location(True))
+    retry = "2"
+    print("Souhaitez vous cibler un autre département ?\n1-Oui\n2-Non")
+
+    retry = return_entry(choice_department, ["Oui", "Non"])
+
+    while retry == "1":
+
+        print("Souhaitez vous cibler un autre département ?\n1-Oui\n2-Non")
+        departments.append(navigate_location(True))
 
 
-def choice_commune() -> str:
-    name = ""
-    return name
+def choice_commune() -> int | list[int]:
+    communes = []
+    communes.append(navigate_location(True))
+    retry = "2"
+    print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
+
+    retry = return_entry(choice_department, ["Oui", "Non"])
+
+    while retry == "1":
+
+        print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
+        communes.append(navigate_location(True))
