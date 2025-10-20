@@ -5,3 +5,4 @@ launch.py
 __pycache__/
 *.json
 README.md
+*.xlsx
