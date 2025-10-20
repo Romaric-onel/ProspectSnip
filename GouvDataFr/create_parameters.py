@@ -55,15 +55,16 @@ def department_or_commune() -> int | list[int]:
 def choice_department() -> int | list[int]:
     departments = []
     departments.append(navigate_location(True))
-    retry = "2"
+    retry = "Non"
+
     print("Souhaitez vous cibler un autre département ?\n1-Oui\n2-Non")
-
     retry = return_entry(choice_department, ["Oui", "Non"])
-
-    while retry == "1":
-
-        print("Souhaitez vous cibler un autre département ?\n1-Oui\n2-Non")
+    while retry == "Oui":
         departments.append(navigate_location(True))
+        print("Souhaitez vous cibler un autre département ?\n1-Oui\n2-Non")
+        retry = return_entry(choice_department, ["Oui", "Non"])
+
+    return list(dict.fromkeys(departments))
 
 
 def choice_commune() -> int | list[int]:
@@ -74,7 +75,10 @@ def choice_commune() -> int | list[int]:
 
     retry = return_entry(choice_department, ["Oui", "Non"])
 
-    while retry == "1":
+    while retry == "Oui":
 
+        communes.append(navigate_location(False))
         print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
-        communes.append(navigate_location(True))
+        retry = return_entry(choice_department, ["Oui", "Non"])
+
+    return list(dict.fromkeys(communes))
