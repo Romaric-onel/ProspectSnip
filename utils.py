@@ -87,14 +87,16 @@ def navigate_location(loc: bool) -> int:
         order = "REG"
         ch = "Département"
         name: list = [1, 5]
+        step = 10
     else:
         filename = COMMUNE_FILE
         order = "COM"
         ch = "Commune"
         name: list = [9]
+        step = 15
     data: pd.DataFrame = pd.read_csv(filename).sort_values(by=order, ascending=True)
     choice = 0
-    step = 10
+
     i = 0
     print("---Bienvenue dans le menu de navigation---")
     print(
@@ -127,12 +129,15 @@ def navigate_location(loc: bool) -> int:
                 return navigate_location(loc)
             else:
                 i -= step
-
+        elif not entry_empty(cmd):
+            print(
+                "Vous avez entré une commande vide.\nRetour au début du menu de navigation"
+            )
         else:
 
             try:
                 choice_num = int(cmd)
-                
+
             except ValueError:
                 print("Commande non reconnue")
                 return navigate_location(loc)
@@ -144,13 +149,11 @@ def navigate_location(loc: bool) -> int:
                 break
 
     if loc:
-        choice = data.loc[choice_num, "DEP"]
-        print("Ca a marché")
-        print(choice)
+        choice = data.loc[choice_num - 1, "DEP"]
     else:
-        choice = None
+        choice = data.loc[choice_num, "COM"]
 
+    print(f"Excellent !!! Vous avez ajouté le {ch} {choice} à votre ciblage")
     return choice
 
 
-navigate_location(True)
