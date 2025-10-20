@@ -4,9 +4,14 @@ from . import HEADERS, clear_terminal, navigate_location, return_entry
 def ask_scrap_information() -> dict[str, str]:
     info = {}
 
-    info["category"] = ask_category()
+    info["categorie_entreprise"] = ask_category()
     clear_terminal()
     info["territory"] = department_or_commune()
+
+    if len(info["territory"][0]) > 3:
+        info["departement"] = info.pop("territory")
+    else:
+        info["code_commune"] = info.pop("territory")
 
     print(info)
     return info
@@ -29,7 +34,7 @@ def ask_category() -> str:
     return choice[0]
 
 
-def department_or_commune() -> int | list[int]:
+def department_or_commune() -> str | list[str]:
 
     LIST_CHOICES = [
         (True, "Un Département français précis"),
@@ -52,7 +57,7 @@ def department_or_commune() -> int | list[int]:
         return choice_commune()
 
 
-def choice_department() -> int | list[int]:
+def choice_department() -> str | list[str]:
     departments = []
     departments.append(navigate_location(True))
     retry = "Non"
@@ -67,18 +72,18 @@ def choice_department() -> int | list[int]:
     return list(dict.fromkeys(departments))
 
 
-def choice_commune() -> int | list[int]:
+def choice_commune() -> str | list[str]:
     communes = []
     communes.append(navigate_location(True))
     retry = "2"
     print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
 
     retry = return_entry(choice_department, ["Oui", "Non"])
-
+    
     while retry == "Oui":
 
-        communes.append(navigate_location(False))
-        print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
-        retry = return_entry(choice_department, ["Oui", "Non"])
+            communes.append(navigate_location(False))
+            print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
+            retry = return_entry(choice_department, ["Oui", "Non"])
 
     return list(dict.fromkeys(communes))
