@@ -6,12 +6,12 @@ def ask_scrap_information() -> dict[str, str]:
 
     info["categorie_entreprise"] = ask_category()
     clear_terminal()
-    # info["territory"] = department_or_commune()
+    info["territory"] = department_or_commune()
 
-    # if len(info["territory"][0]) > 3:
-    #     info["departement"] = info.pop("territory")
-    # else:
-    #     info["code_commune"] = info.pop("territory")
+    if len(info["territory"][0]) > 3:
+        info["departement"] = info.pop("territory")
+    else:
+        info["code_commune"] = info.pop("territory")
     info["est_entrepreneur_individuel"] = is_solopreneur()
     print(info)
     return info
