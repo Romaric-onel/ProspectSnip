@@ -77,7 +77,7 @@ def choice_department() -> str | list[str]:
 
 def choice_commune() -> str | list[str]:
     communes = []
-    communes.append(navigate_location(True))
+    communes.append(navigate_location(False))
     retry = "2"
     print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
 
