@@ -60,8 +60,8 @@ def return_entry(function: Callable, LIST_CHOICES: list) -> Any:
         return function()
     elif verif:
         choice_int = verif
-        if not choice_int in range(1, len(LIST_CHOICES) + 1):
-            print(f"\nVeuillez entre un chiffre entre 1 et {len(LIST_CHOICES)+1}")
+        if not choice_int in range(1, len(LIST_CHOICES)+1):
+            print(f"\nVeuillez entre un chiffre entre 1 et {len(LIST_CHOICES)}")
             return function()
 
         choice = LIST_CHOICES[choice_int - 1]
@@ -72,8 +72,8 @@ def return_entry(function: Callable, LIST_CHOICES: list) -> Any:
         return function()
 
 
-def clear_terminal():
-    time.sleep(0.25)
+def clear_terminal(n:float | int):
+    time.sleep(n)
     if os.name == "nt":  # windows
         os.system("cls")
 
