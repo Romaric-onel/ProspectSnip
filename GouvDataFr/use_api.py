@@ -1,14 +1,15 @@
 from .create_parameters import  ask_scrap_information
 from . import urlencode, urljoin, API_DATA_GOUV_FR, json, pandas, requests
-from . import os, openpyxl
-def call_api_and_decode_result(info):
+from . import os, openpyxl, asyncio
+async def call_api_and_decode_result(info):
     query_string = urlencode(info)
     url = f"{API_DATA_GOUV_FR}search?{query_string}".replace("%2C", ",")
 
-    print(url)
+    
     try:
-        response = requests.get(url)
+        response = await asyncio.to_thread(requests.get, url, timeout=15)
         response.raise_for_status()
+        print(response.content)
         return json.loads(response.content.decode("utf-8"))
     
     except requests.exceptions.Timeout:
@@ -22,21 +23,20 @@ def call_api_and_decode_result(info):
     
     return None
 
-def combine_all_result():
+async def combine_all_result():
     info = ask_scrap_information()
-    all_resultats = []
-    while True:
-        print(info)
-        results = call_api_and_decode_result(info)
-        info["page"] += 1
-        if info["page"] > results ["total_pages"]:
-            break
-        
-        
-        if results:
-            all_resultats.append(results)
-        print(all_resultats)
-    return all_resultats
     
-    # with open("resultat_vf.json", "w", encoding="utf-8") as f:
-    #     json.dump(json.loads(results), f, indent=4, ensure_ascii=False)
+    first_result = await call_api_and_decode_result(info)
+    if not first_result:
+        return []
+
+    total_pages = first_result.get("total_pages", 1)
+    tasks = [
+        call_api_and_decode_result({**info, "page": page})
+        for page in range(2, total_pages + 1)
+    ]
+    rest_results = []
+    if tasks:
+        rest_results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    return [first_result] + rest_results
