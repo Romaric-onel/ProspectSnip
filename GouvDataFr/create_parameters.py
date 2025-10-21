@@ -8,7 +8,7 @@ def ask_scrap_information() -> dict[str, str]:
     clear_terminal()
     info["territory"] = department_or_commune()
 
-    if len(info["territory"][0]) > 3:
+    if len(info["territory"][0]) <= 3:
         info["departement"] = (", ".join(info.pop("territory"))).replace(" ", "")
     else:
         info["code_commune"] = (", ".join(info.pop("territory"))).replace(" ", "")
