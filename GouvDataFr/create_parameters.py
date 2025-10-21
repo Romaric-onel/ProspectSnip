@@ -1,23 +1,26 @@
 from . import HEADERS, clear_terminal, navigate_location, return_entry
 
-
+INFOS = {}
 def ask_scrap_information() -> dict[str, str]:
-    info = {}
-
-    info["categorie_entreprise"] = ask_category()
+    
+    global INFOS
+    INFOS["categorie_entreprise"] = ask_category()
     clear_terminal()
-    info["territory"] = department_or_commune()
-    if info["territory"]:
-        if len(info["territory"][0]) <= 3:
-            info["departement"] = (", ".join(info.pop("territory"))).replace(" ", "")
+    INFOS["territory"] = department_or_commune()
+    if INFOS["territory"]:
+        if len(INFOS["territory"][0]) <= 3:
+            INFOS["departement"] = (", ".join(INFOS.pop("territory"))).replace(" ", "")
         else:
-            info["code_commune"] = (", ".join(info.pop("territory"))).replace(" ", "")
-    info["est_entrepreneur_individuel"] = is_solopreneur()
-    info["est_organisme_formation"] = est_organisme_formation()
-    info["tranche_effectif_salarie"] = tranche_effectif_salarie()
-    print(info)
-    info = {key: value for key, value in info.items() if value is not None}
-    return info
+            INFOS["code_commune"] = (", ".join(INFOS.pop("territory"))).replace(" ", "")
+    INFOS["est_entrepreneur_individuel"] = is_solopreneur()
+    INFOS["est_organisme_formation"] = est_organisme_formation()
+    INFOS["tranche_effectif_salarie"] = tranche_effectif_salarie()
+    info_connaissance()
+    chiffre_affaires()
+    resultat_net()
+    print(INFOS)
+    INFOS = {key: value for key, value in INFOS.items() if value is not None}
+    return INFOS
 
 
 def ask_category() -> str:
@@ -37,7 +40,7 @@ def ask_category() -> str:
     return choice[0]
 
 
-def department_or_commune() -> str | list[str]:
+def department_or_commune():
 
     LIST_CHOICES = [
         (True, "Un Département français précis"),
@@ -60,7 +63,7 @@ def department_or_commune() -> str | list[str]:
         return choice_commune()
 
 
-def choice_department() -> str | list[str]:
+def choice_department():
     departments = []
     departments.append(navigate_location(True))
     retry = "Non"
@@ -75,7 +78,7 @@ def choice_department() -> str | list[str]:
     return list(dict.fromkeys(departments))
 
 
-def choice_commune() -> str | list[str]:
+def choice_commune():
     communes = []
     communes.append(navigate_location(False))
     retry = "2"
@@ -111,6 +114,9 @@ def est_organisme_formation():
         (None, "Je n'ai pas de préférences")
     ]
 
+    for num, choices in enumerate(LIST_CHOICES):
+        print(f"{num+1} - {choices[1]}")
+
     choice_num = return_entry(est_organisme_formation, LIST_CHOICES)
     choice = choice_num[0]
 
@@ -137,8 +143,130 @@ def tranche_effectif_salarie():
         ("53", "10 000 salariés et plus")
     ]
 
+    print("Veuillez choisir la tranche effectif salariale de votre cible")
+
+    for num, choices in enumerate(LIST_CHOICES):
+        print(f"{num+1} - {choices[1]}")
+
     choice_num = return_entry(tranche_effectif_salarie, LIST_CHOICES)
 
     choice = choice_num[0]
 
     return choice
+
+def info_connaissance():
+    global INFOS
+    print("Connaissez vous au moins une personne dans l'entreprise ?\n1-Oui\n2-Non")
+    answer = return_entry(info_connaissance, ["Oui", "Non"])
+
+    if answer == "Oui":
+        INFOS ["nom_personne"] = nom_personne()
+        INFOS ["prenoms_personne"] = prenoms_personne()
+        INFOS ["type_personne"] = type_personne()
+
+def nom_personne():
+    nom = input("Saisissez le nom de la personne.\nCliquez sur 'Entrer' pour passer ... ")
+    return nom
+
+def prenoms_personne():
+    prenom = input("Entrez le(s) prénom(s) de la personne.\nCliquez sur 'Entrer' pour passer ... ")
+    return prenom.split(" ")
+
+def type_personne():
+    print("Qu'est cette personne dans l'entreprise ?")
+
+    LIST_CHOICES = [
+        ("dirigeant", "Il s'agit d'un dirigeant"),
+        ("elu", "Il s'agit d'un élu"),
+        (None, "Ni l'un ni l'autre")
+    ]
+
+    
+    for num, choices in enumerate(LIST_CHOICES):
+        print(f"{num+1} - {choices[1]}")
+
+    choice_num = return_entry(tranche_effectif_salarie, LIST_CHOICES)
+
+    choice = choice_num[0]
+
+    return choice
+
+
+
+def chiffre_affaires():
+    global INFOS
+    print("Connaissez vous le chiffre d'affaires de votre cible ?")
+
+    answer = return_entry(chiffre_affaires, ["Oui", "Non"])
+
+    if answer == "Oui":
+        INFOS["ca_min"] = chiffre_affaires_min()
+        INFOS["ca_max"] = chiffre_affaires_max()
+        
+def chiffre_affaires_min():
+    ca_min_str = input ("Quelle est la valeur minimale du chiffre d'affaire de votre cible ?")
+    if not ca_min_str:
+        return None    
+    try:
+        ca_min = int(ca_min_str)
+    except:
+        print("Veuillez saisir un nombre sans virgule et sans caractères spéciaux")
+
+        return chiffre_affaires_min()
+    
+    return ca_min
+
+
+
+def chiffre_affaires_max():
+    ca_max_str = input ("Quelle est la valeur maximale du chiffre d'affaire de votre cible ?")
+    if not ca_max_str:
+        return None
+    try:
+        ca_max = int(ca_max_str)
+    except:
+        print("Veuillez saisir un nombre sans virgule et sans caractères spéciaux")
+
+        return chiffre_affaires_max()
+    
+    return ca_max
+
+
+def resultat_net():
+    global INFOS
+    print("Connaissez vous le chiffre d'affaires de votre cible ?")
+
+    answer = return_entry(resultat_net, ["Oui", "Non"])
+
+    if answer == "Oui":
+        INFOS["resultat_net_min"] = resultat_net_min()
+        INFOS["resultat_net_max"] = resultat_net_max()
+        
+def resultat_net_min():
+    res_min_str = input ("Quel est le resultat net minimum de votre cible ?.\nCliquez sur 'Entrée' pour passer la question")
+    if not res_min_str:
+        return None
+    try:
+        res_min = int(res_min_str)
+    except:
+        print("Veuillez saisir un nombre sans virgule et sans caractères spéciaux")
+
+        return resultat_net_min()
+    
+    return res_min
+
+
+
+def resultat_net_max():
+    res_max_str = input ("Quel est le resultat net maximal de votre cible ?\nCliquez sur 'Entrée' pour passer la question")
+    if not res_max_str:
+        return None
+    try:
+        res_max = int(res_max_str)
+    except:
+        print("Veuillez saisir un nombre sans virgule et sans caractères spéciaux")
+
+        return resultat_net_max()
+    
+    return res_max
+
