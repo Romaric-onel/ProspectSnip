@@ -9,9 +9,9 @@ def ask_scrap_information() -> dict[str, str]:
     info["territory"] = department_or_commune()
 
     if len(info["territory"][0]) > 3:
-        info["departement"] = info.pop("territory")
+        info["departement"] = (", ".join(info.pop("territory"))).replace(" ", "")
     else:
-        info["code_commune"] = info.pop("territory")
+        info["code_commune"] = (", ".join(info.pop("territory"))).replace(" ", "")
     info["est_entrepreneur_individuel"] = is_solopreneur()
     print(info)
     return info

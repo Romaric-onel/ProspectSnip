@@ -6,5 +6,5 @@ def main():
 
     query_string = urlencode(info)
 
-    url = f"{API_DATA_GOUV_FR}search?{query_string}"
+    url = f"{API_DATA_GOUV_FR}search?{query_string}".replace("%2C", ",")
     print(url)
