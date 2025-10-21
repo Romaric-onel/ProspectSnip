@@ -7,13 +7,14 @@ def ask_scrap_information() -> dict[str, str]:
     info["categorie_entreprise"] = ask_category()
     clear_terminal()
     info["territory"] = department_or_commune()
-
-    if len(info["territory"][0]) <= 3:
-        info["departement"] = (", ".join(info.pop("territory"))).replace(" ", "")
-    else:
-        info["code_commune"] = (", ".join(info.pop("territory"))).replace(" ", "")
+    if info["territory"]:
+        if len(info["territory"][0]) <= 3:
+            info["departement"] = (", ".join(info.pop("territory"))).replace(" ", "")
+        else:
+            info["code_commune"] = (", ".join(info.pop("territory"))).replace(" ", "")
     info["est_entrepreneur_individuel"] = is_solopreneur()
     print(info)
+    info = {key: value for key, value in info.items() if value is not None}
     return info
 
 
@@ -98,3 +99,10 @@ def is_solopreneur():
         print(f"{num+1} - {choice[1]}")
     choice = return_entry(is_solopreneur, LIST_CHOICES)
     return choice[0]
+
+
+
+def est_organisme_formation():
+    LIST_CHOICES = [
+        ()
+    ]
