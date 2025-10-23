@@ -1,12 +1,17 @@
+import sys
+from pathlib import Path
+from loguru import logger
+
 import json
 import os
 import time
 from typing import Any, Callable
-
+import requests
 import pandas as pd
 from decouple import config
+from requests.adapters import HTTPAdapter
 from tabulate import tabulate
-
+from urllib3.util.retry import Retry, RequestHistory
 DEPARTMENT_FILE = os.path.join(
     os.getcwdb().decode("utf-8"), "sources", "departement_fr_2025.csv"
 )
@@ -157,3 +162,35 @@ def navigate_location(loc: bool) -> int:
     return choice
 
 
+
+def create_session():
+    session = requests.Session()
+    retries = Retry(
+        total=3, backoff_factor=1, status_forcelist=(429, 500, 502, 503, 504)
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+    return session
+
+
+def create_log_file():
+    logs = Path("logs")
+    logs.mkdir(exist_ok=True)
+
+    logger.remove()
+    logger.add(
+        sys.stderr,
+        level="ERROR",
+        format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{module}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - {message}",
+        backtrace=False,   # True si tu veux backtrace complet (plus verbeux)
+        diagnose=False     # True pour plus de détails (lent)
+    )
+
+    logger.add(
+        logs / "ProspectSnip.log",
+        level="DEBUG",
+        rotation="10 MB",
+        retention="14 days",
+        compression="zip",
+        enqueue=True  # safe pour multithreading / multiprocessing
+    )

@@ -8,3 +8,5 @@ README.md
 *.xlsx
 TEST/
 KIVY/
+*.log
+logs/
