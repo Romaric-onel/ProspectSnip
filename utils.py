@@ -182,7 +182,7 @@ def create_log_file():
         sys.stderr,
         level="ERROR",
         format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{module}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - {message}",
-        backtrace=False,   # True si tu veux backtrace complet (plus verbeux)
+        backtrace=True,   # True si tu veux backtrace complet (plus verbeux)
         diagnose=False     # True pour plus de détails (lent)
     )
 
