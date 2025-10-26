@@ -6,12 +6,13 @@ INFOS["page"] = 1
 def ask_scrap_information() -> dict[str, str]:
 
     global INFOS
-    INFOS["categorie_entreprise"] = ask_category()
+    INFOS["categorie_entreprise"] = "GE"
+    """INFOS["categorie_entreprise"] = ask_category()
     clear_terminal(1)
     
     INFOS["territory"] = department_or_commune()
     clear_terminal(1)
-    """if INFOS["territory"]:
+    if INFOS["territory"]:
         if len(INFOS["territory"][0]) <= 3:
             INFOS["departement"] = (", ".join(INFOS.pop("territory"))).replace(" ", "")
         else:

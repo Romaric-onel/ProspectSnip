@@ -13,6 +13,7 @@ async def call_api(info, semaphore):
             logger.debug("Response %s for %s ", response.status_code, url)
             response.raise_for_status()
             print(response.content)
+            #print(url)
             return response.json()
 
         except Timeout as e:
