@@ -8,16 +8,12 @@ from urllib.parse import urlencode
 import openpyxl
 import pandas
 from decouple import config
-from requests.exceptions import ConnectionError, RequestException, Timeout
 from loguru import logger
-from utils import (
-    HEADERS,
-    clear_terminal,
-    create_session,
-    navigate_location,
-    return_entry,
-    verify_entry,
-)
+from requests.exceptions import ConnectionError, RequestException, Timeout
+
+from utils import HEADERS, clear_terminal, return_entry, verify_entry
+
+from .utils_fr import create_session, navigate_location
 
 ID_REQUETE = random.randint(100000000, 100000000)
 API_DATA_GOUV_FR = config("ApiGouvEntreprise", cast=str, default=None)
