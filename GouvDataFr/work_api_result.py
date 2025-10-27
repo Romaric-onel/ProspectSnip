@@ -1,6 +1,6 @@
 from openpyxl.workbook.workbook import Workbook
 
-from . import asyncio, chain, json, openpyxl, os, pandas, ANNEE_DERNIERE
+from . import ANNEE_DERNIERE, asyncio, chain, json, openpyxl, os, pandas
 from .use_api import combine_all_result
 
 start = 0
@@ -23,27 +23,31 @@ def resultat_to_sheet():
     # ....
     excel_presentation.title = "Présentation"  # type: ignore
 
-    # remplir les feuilles
+    # remplir les données dans les feuilles
     for i, cible in enumerate(data):
         # données
         name = cible["nom_complet"]
         members = [member for member in cible["dirigeants"]]
-       
+
         try:
-            finance = cible["finances"]["ANNEE_DERNIERE"] 
+            finance = cible["finances"]["ANNEE_DERNIERE"]
         except:
-            finance = {'ca': None, 'resultat_net': None}
-        # data[93]['']
+            finance = {"ca": None, "resultat_net": None}
+        
+
         # remplissage feuille 1
+
         excel_presentation.cell(row=i + 2, column=1, value=name)
+        excel_presentation.cell(row=i + 2, column=2, value=cible["date_creation"])
+        # excel_presentation.cell(row=i + 2, column=3, value=cible["siege"]["date_debut_activite"])
+        # excel_presentation.cell(row = i+2, column=, value=cible["date_creation"])
         excel_presentation.cell(
-            row=i + 2, column=2, value=cible["siege"]["date_creation"]
+            row=i + 2, column=3, value="✅" if cible["date_fermeture"] else "❌"
         )
-        excel_presentation.cell(row=i + 2, column=3, value=cible["siege"]["adresse"])
-        excel_presentation.cell(
-            row=i + 2, column=2, value=cible["siege"]["date_debut_activite"]
-        )
-        # remplissage
+        excel_presentation.cell(row=i + 2, column=4, value=cible["siege"]["adresse"])
+        
+        
+        # remplissage feuille 2
 
         if members:
 
@@ -99,12 +103,31 @@ def resultat_to_sheet():
         start += len(members) + 1
 
         # remplissage feuille 3
+
         excel_finance.cell(row=i + 2, column=1, value=name)
         excel_finance.cell(row=i + 2, column=2, value=finance["ca"])
         excel_finance.cell(row=i + 2, column=3, value=finance["resultat_net"])
-        
+        excel_finance.cell(
+            row=i + 2,
+            column=4,
+            value=(
+                int(cible["tranche_effectif_salarie"])
+                if cible["tranche_effectif_salarie"] != "NN"
+                else None
+            ),
+        )
+
+
+    #remplir les en têtes des feuilles
+    header1 = ("Nom de la structure", "Date de création", "Est fermé ?", "Adresse du siège")
+    header2 = ("Nom de la structure", "Nom des membres / Dénomination", "Prénoms des membres", "Qualité dans la structure", "Personne physique ?", "Année de naissance")
+    header3 = ("Nom de la structure", "Chiffre d'affaires", "Résultat net", "Effectif salarié")
+
+
+    for sheet, head in zip((excel_presentation, excel_membre, excel_finance), (header1, header2, header3), strict=True):
+        for ind, cell in enumerate(sheet[1]):
+            sheet.cell(row=1, column = ind+1, value = head[ind])
+
 
     excel.save("result.xlsx")
     return excel
-
-
