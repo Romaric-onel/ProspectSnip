@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import sys
 import time
 from pathlib import Path
@@ -8,7 +9,9 @@ from typing import Any, Callable
 from decouple import config
 from loguru import logger
 
-HEADERS = config("HEADERS", cast=lambda x: json.loads(x), default={})
+env_HEADERS: list[str] | bool = (
+    config("HEADERS", cast=lambda x: x.split("#") if x else [], default=[]) or []
+)
 
 
 def exit_fonction() -> None:
@@ -72,8 +75,8 @@ def clear_terminal(n: float | int):
     if os.name == "nt":  # windows
         os.system("cls")
 
-    else:  # macos et linux
-        os.system("cls")
+    else:
+        os.system("clear")
 
 
 def create_log_file():

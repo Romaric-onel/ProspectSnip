@@ -1,4 +1,4 @@
-from . import HEADERS, clear_terminal, navigate_location, return_entry
+from . import clear_terminal, navigate_location, return_entry
 
 INFOS = {}
 INFOS["per_page"] = 25

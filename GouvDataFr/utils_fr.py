@@ -1,55 +1,35 @@
+import random
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
 import requests
 from openpyxl import Workbook
-from openpyxl.styles import Font
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Protection, Side
 from openpyxl.workbook.workbook import Workbook as Book
 from requests.adapters import HTTPAdapter
 from tabulate import tabulate
 from urllib3.util.retry import Retry  # , RequestHistory
-from openpyxl.styles import GradientFill
 
-from utils import entry_empty
+from utils import entry_empty, env_HEADERS
 
 DEPARTMENT_FILE = Path("sources", "departement_fr_2025.csv")
 COMMUNE_FILE = Path("sources", "commune_fr_2025.csv.csv")
-EMPTY_ROW_STYLE = GradientFill(type="linear", stop=("FF000000", "FFFFFFFF"))
 ANNEE_DERNIERE = datetime.today().year - 1
-# class MySheet(Workbook):
 
-#     def __init__(
-#         self,
-#         write_only: bool = False,
-#         iso_dates: bool = False,
-#         sheet: Book = Workbook(),
-#     ) -> None:
-#         self.sheet = sheet
-#         super().__init__(write_only, iso_dates)
 
-#     def init_sheet_format(self, name_book: str):
+HEADER_FONT = Font(
+    name="Roboto", size=13, bold=True, vertAlign=None, underline="none", color="FCFFDE"
+)
+HEADER_FILL = PatternFill(fill_type="solid", fgColor="FFC107")
 
-#         sheet.title = name_book  # type: ignore
-#         bold = Font(bold=True)
-#         header_font = Font(color="FFC107", bold=True)
+ROW_FILL = PatternFill(fill_type="solid", fgColor="F2F2F2")
 
-#         green_font = None
-
-#         header = sheet[1]  # type: ignore
-
-#         for cell in header:
-#             cell.font = header_font  # type: ignore
-#         rows = list(self.sheet)
-#         for i, row in enumerate(rows):
-#             if i == 0 or i % 2 == 0:
-#                 continue
-#             elif not i % 2 == 1:
-#                 for cell in row:
-#                     cell.font = green_font  # type: ignore
-
-#     def existing_sheet_format(self, sheet, name)
-
+def rotate_header(session: requests.Session) -> requests.Session:
+    global env_HEADERS
+    HEADERS: dict = {"User-Agent": random.choice(env_HEADERS)}
+    session.headers.update(HEADERS)
+    return session
 
 
 def navigate_location(loc: bool) -> int:

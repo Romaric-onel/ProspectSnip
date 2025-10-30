@@ -1,3 +1,5 @@
+import time
+A1 = time.time()
 from utils import clear_terminal
 from GouvDataFr.work_api_result import resultat_to_sheet
 from utils import create_log_file
@@ -10,3 +12,9 @@ log_file = create_log_file()
 
 if __name__ == "__main__":
     resultat_to_sheet()
+A2 = time.time()
+
+for _ in range(4):
+    print()
+
+print(f"Le temps total est de {A2-A1}")
