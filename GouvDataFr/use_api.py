@@ -1,3 +1,4 @@
+import urllib3
 from . import API_DATA_GOUV_FR,  asyncio, json, session, urlencode, Timeout, ConnectionError, RequestException
 from .create_parameters import ask_scrap_information
 from . import logger
@@ -24,9 +25,12 @@ async def call_api(info, semaphore):
         except ConnectionError as e:
             logger.exception(f"ConnectionError for {url}: {e}")
             print(e, url)
+        except urllib3.exceptions.MaxRetryError as e:
+            logger.exception(f"Le nombre maximal de réessai est atteint{e}")
         except RequestException as e:
             logger.exception(f"RequestException for {url}: {e}")
             print(e, url)
+        
         return None
 
 

@@ -11,6 +11,7 @@ from . import (
     openpyxl,
     os,
     pandas,
+    ID_REQUETE
 )
 from .use_api import combine_all_result
 from .utils_fr import ROW_FILL
@@ -98,7 +99,7 @@ def resultat_to_sheet():
                 excel_membre.cell( # pyright: ignore[reportAttributeAccessIssue]
                     row=num + 2,
                     column=6,
-                    value=int(naissance) if naissance else naissance,
+                    value=int(naissance) if naissance and naissance!= "[NON-DIFFUSIBLE]" else naissance,
                 )
                 if nom is None and prenoms is None:
                     excel_membre.cell(row=num + 2, column=2, value=denomination) # pyright: ignore[reportAttributeAccessIssue]
@@ -163,6 +164,27 @@ def resultat_to_sheet():
 
     for worksheet in excel:
         worksheet.freeze_panes = "B2"
+        
+        for ie, row in enumerate(worksheet.rows):
+            ie += 1
+            if ie == 1:
+                for cell in worksheet[ie]:
+                    cell.font = HEADER_FONT
+                    cell.fill = HEADER_FILL
+
+                    column_letter = get_column_letter(cell.column)  # pyright: ignore[reportArgumentType]
+                    adjusted_width = len(str(cell.value)) + 10
+                    worksheet.column_dimensions[column_letter].width = adjusted_width
+            elif not ie % 2:
+                continue
+
+            else:
+                if ie == 1:
+                    continue
+                for cell in worksheet[ie]:
+                    cell.fill = ROW_FILL
+
+        """
         aaa = (1,) + tuple(b for b in range(len(tuple(worksheet.rows))) if not b % 2 and b != 0)
         for b in aaa : #(1, len() + 1):
             #print(b)
@@ -177,7 +199,7 @@ def resultat_to_sheet():
 
             else:
                 for cell in worksheet[b]:
-                    cell.fill = ROW_FILL
+                    cell.fill = ROW_FILL"""
 
         """for b in range(1, len(tuple(worksheet.rows)) + 1):
 
@@ -199,5 +221,5 @@ def resultat_to_sheet():
                 for cell in worksheet[b]:
                     cell.fill = ROW_FILL"""
 
-    excel.save("result.xlsx")
+    excel.save(f"result.xlsx{ID_REQUETE}")
     return excel

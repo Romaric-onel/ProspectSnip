@@ -1,4 +1,4 @@
-from . import clear_terminal, navigate_location, return_entry
+from . import clear_terminal, navigate_location, return_entry, print_animate_texte
 
 INFOS = {}
 INFOS["per_page"] = 25
@@ -7,7 +7,7 @@ def ask_scrap_information() -> dict[str, str]:
 
     global INFOS
     INFOS["categorie_entreprise"] = "GE"
-    """INFOS["categorie_entreprise"] = ask_category()
+    INFOS["categorie_entreprise"] = ask_category()
     clear_terminal(1)
     
     INFOS["territory"] = department_or_commune()
@@ -29,7 +29,7 @@ def ask_scrap_information() -> dict[str, str]:
     chiffre_affaires()
     clear_terminal(1)
     resultat_net()
-    clear_terminal(1)"""
+    clear_terminal(1)
     print(INFOS)
     INFOS = {key: value for key, value in INFOS.items() if value is not None}
     return INFOS
@@ -42,7 +42,7 @@ def ask_category() -> str:
         ("GE", "Grandes entreprises"),
     ]
 
-    print("Voici les catégories disponibles en France\n")
+    print_animate_texte("Voici les catégories disponibles en France")
 
     for num, category in enumerate(LIST_CHOICES):
         print(f"{num+1} - {category[1]}")
@@ -60,7 +60,7 @@ def department_or_commune():
         (None, "Pas de préférences"),
     ]
 
-    print("Vous aviez le choix. Que ciblez vous")
+    print_animate_texte("Vous aviez le choix. Que ciblez vous")
     for num, choice in enumerate(LIST_CHOICES):
         print(f"{num+1} - {choice[1]}")
 
@@ -80,7 +80,8 @@ def choice_department():
     departments.append(navigate_location(True))
     retry = "Non"
 
-    print("Souhaitez vous cibler un autre département ?\n1-Oui\n2-Non")
+    print_animate_texte("Souhaitez vous cibler un autre département ?") ; print("\n1-Oui\n2-Non")
+    
     retry = return_entry(choice_department, ["Oui", "Non"])
     while retry == "Oui":
         departments.append(navigate_location(True))
@@ -94,7 +95,7 @@ def choice_commune():
     communes = []
     communes.append(navigate_location(False))
     retry = "2"
-    print("Souhaitez vous cibler une autre commune ?\n1-Oui\n2-Non")
+    print_animate_texte("Souhaitez vous cibler une autre commune ?");print("\n1-Oui\n2-Non")
 
     retry = return_entry(choice_department, ["Oui", "Non"])
 
@@ -113,6 +114,7 @@ def is_solopreneur():
         (False, "N'est pas entrepreneur individuel"),
         (None, "Pas de préférence"),
     ]
+    print_animate_texte("Quel est le statut entrepreneur de votre cible ?")
     for num, choice in enumerate(LIST_CHOICES):
         print(f"{num+1} - {choice[1]}")
     choice = return_entry(is_solopreneur, LIST_CHOICES)
@@ -125,7 +127,7 @@ def est_organisme_formation():
         (False, "Je ne cible pas des organismes de formation"),
         (None, "Je n'ai pas de préférences"),
     ]
-
+    print_animate_texte("Est ce que votre cible est un organisme de formation ?")
     for num, choices in enumerate(LIST_CHOICES):
         print(f"{num+1} - {choices[1]}")
 
@@ -155,7 +157,7 @@ def tranche_effectif_salarie():
         ("53", "10 000 salariés et plus"),
     ]
 
-    print("Veuillez choisir la tranche effectif salariale de votre cible")
+    print_animate_texte("Veuillez choisir la tranche effectif salariale de votre cible")
 
     for num, choices in enumerate(LIST_CHOICES):
         print(f"{num+1} - {choices[1]}")
@@ -169,7 +171,7 @@ def tranche_effectif_salarie():
 
 def info_connaissance():
     global INFOS
-    print("Connaissez vous au moins une personne dans l'entreprise ?\n1-Oui\n2-Non")
+    print_animate_texte("Connaissez vous au moins une personne dans l'entreprise ?") ; print("\n1-Oui\n2-Non")
     answer = return_entry(info_connaissance, ["Oui", "Non"])
 
     if answer == "Oui":
@@ -218,7 +220,7 @@ def type_personne():
 
 def chiffre_affaires():
     global INFOS
-    print("Connaissez vous le chiffre d'affaires de votre cible ? \n\n1-Oui\n2-Non")
+    print_animate_texte("Connaissez vous le chiffre d'affaires de votre cible ?") ; print("\n1-Oui\n2-Non")
 
     answer = return_entry(chiffre_affaires, ["Oui", "Non"])
 
@@ -263,7 +265,7 @@ def chiffre_affaires_max():
 
 def resultat_net():
     global INFOS
-    print("Connaissez vous le resultat net de votre cible ?\n\n1-Oui\n2-Non")
+    print_animate_texte("Connaissez vous le resultat net annuel de votre cible ?") ; print("\n1-Oui\n2-Non")
 
     answer = return_entry(resultat_net, ["Oui", "Non"])
 

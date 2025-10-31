@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 from decouple import config
 from loguru import logger
+from termcolor import colored
 
 env_HEADERS: list[str] | bool = (
     config("HEADERS", cast=lambda x: x.split("#") if x else [], default=[]) or []
@@ -38,7 +39,7 @@ def verify_entry() -> bool | int | None:
         "\nVeuillez entrer le chiffre correspondant à votre demande ou 'exit' pour sortir : "
     )
 
-    if choice_str == "exit":
+    if choice_str.lower() == "exit":
         exit_fonction()
     if not entry_empty(choice_str):  # True quand on écrit et False quand rien est écrit
         return None
@@ -100,3 +101,22 @@ def create_log_file():
         compression="zip",
         enqueue=True,  # safe pour multithreading / multiprocessing
     )
+
+
+def print_animate_texte(
+    texte: str,
+    couleur: tuple[int, int, int] = (252, 255, 222),
+    duree: int | float = 3,
+    attributs: list[str] = ["blink"],
+):
+    start_anim = time.time()
+    end_anim = start_anim + duree
+    message_anim = colored(text=texte, color=couleur, attrs=attributs)
+    message_empty = " " * len(texte)
+
+    while time.time() < end_anim:
+        print(f"\r{message_anim}", end="", flush=True)
+        time.sleep(0.5)
+        print(f"\r{message_empty}", end="", flush=True)
+        time.sleep(0.5)
+    print(f"\r{texte}")
