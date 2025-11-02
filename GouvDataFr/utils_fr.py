@@ -11,7 +11,7 @@ from requests.adapters import HTTPAdapter
 from tabulate import tabulate
 from urllib3.util.retry import Retry  # , RequestHistory
 
-from utils import entry_empty, env_HEADERS
+from utils import entry_empty, env_HEADERS, verif_loc_entry
 
 DEPARTMENT_FILE = Path("sources", "departement_fr_2025.csv")
 COMMUNE_FILE = Path("sources", "commune_fr_2025.csv.csv")
@@ -67,7 +67,9 @@ def navigate_location(loc: bool) -> int:
             )
         )
         print(f"\n--- Affiché {i} à {min(i+step, len(data))} sur {len(data)} ---\n")
-        cmd = input("Saisissez une commande ... ")
+        cmd = verif_loc_entry()
+        if cmd == None:
+            return navigate_location(loc=loc)
         if cmd.upper() == "S":
             if i == len(data) - step:
                 print("Vous êtes déjà à la dernière page")

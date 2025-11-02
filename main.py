@@ -8,7 +8,7 @@ MESSAGE_BIENVENUE = "Bienvenue sur ProspectSnip, un outil développé par Romari
 MESSAGE_FONCTIONNALITE = "Trouver des cibles et automatiser les mails personnalisés en un seul endroit"
 
 clear_terminal(0)
-print_animate_texte(MESSAGE_BIENVENUE, attributs=["bold", "blink"], duree=5)
+print_animate_texte(MESSAGE_BIENVENUE, attributs=["bold", "blink"], duree=0.5)
 for _ in range(2): print()
 print_animate_texte(MESSAGE_FONCTIONNALITE, attributs=["bold", "blink"])
 

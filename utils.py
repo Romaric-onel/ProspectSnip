@@ -106,7 +106,7 @@ def create_log_file():
 def print_animate_texte(
     texte: str,
     couleur: tuple[int, int, int] = (252, 255, 222),
-    duree: int | float = 3,
+    duree: int | float = 0.5,
     attributs: list[str] = ["blink"],
 ):
     start_anim = time.time()
@@ -120,3 +120,14 @@ def print_animate_texte(
         print(f"\r{message_empty}", end="", flush=True)
         time.sleep(0.5)
     print(f"\r{texte}")
+
+
+def verif_loc_entry() -> str | None:
+    cmd = input("Saisissez une commande ... ")
+
+    if cmd.lower() == "exit":
+        exit_fonction()
+    if not entry_empty(cmd):  # True quand on écrit et False quand rien est écrit
+        return None
+
+    return cmd
